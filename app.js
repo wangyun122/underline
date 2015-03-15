@@ -1,3 +1,6 @@
 var _=require("underscore");
 var __=require("./underline.js");
-console.log(__);
+
+__.each([1, 2, 3], function(value, key, list){
+    console.log("value-----:"+value);
+});
