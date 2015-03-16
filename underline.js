@@ -81,6 +81,7 @@
         return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
     };
 
+    var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
 
     __.each= __.forEach=function (obj,iteratee,context) {
         iteratee=optimizeCb(iteratee,context);
@@ -90,11 +91,34 @@
                 iteratee(obj[i],i,obj);
             }
         }else{
-            var keys= _.keys(obj);
+            var keys= __.keys(obj);
             for(i=0,length=keys.length;i<length;i++){
                 iteratee(obj[keys[i]], keys[i], obj);
             }
         }
         return obj;
+    }
+
+    __.keys= function (obj) {
+        if(__.isObject(obj)) return [];
+        if(nativeKeys) return nativeIsArray(obj);
+
+    }
+
+    __.has= function (obj,key) {
+        return obj!=null && hasOwnProperty.call(obj,key);
+    }
+
+    __.isObject= function (obj) {
+        var type=typeof obj;
+        return type==='function' || type==='object' && !! obj;
+        var keys=[];
+        for(var key in obj){
+            if(__.has(obj,key)){
+                keys.push(key);
+            }
+        }
+        if (hasEnumBug) collectNonEnumProps(obj, keys);
+        return keys;
     }
 })();
